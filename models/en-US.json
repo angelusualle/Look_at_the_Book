@@ -1,0 +1,88 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "look at the book",
+      "intents": [
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PauseIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ResumeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StartOverIntent",
+          "samples": []
+        },
+        {
+          "name": "GoBackIntent",
+          "slots": [],
+          "samples": [
+            "main menu",
+            "go back"
+          ]
+        },
+        {
+          "name": "PlayNumberIntent",
+          "slots": [
+            {
+              "name": "episode_number",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "episode_ordinal",
+              "type": "AMAZON.Ordinal"
+            }
+          ],
+          "samples": [
+            "select {episode_number}",
+            "I pick number {episode_number}",
+            "play the {episode_ordinal} one",
+            "start the {episode_ordinal} episode",
+            "start {episode_ordinal}",
+            "play the {episode_ordinal} episode",
+            "play the {episode_ordinal}",
+            "play {episode_ordinal}",
+            "{episode_number}",
+            "play number {episode_number}",
+            "play {episode_number}"
+          ]
+        },
+        {
+          "name": "PlayLatestIntent",
+          "slots": [],
+          "samples": [
+            "play the latest video",
+            "start the latest video",
+            "start the latest episode",
+            "start the latest",
+            "play the latest episode",
+            "play the latest"
+          ]
+        }
+      ],
+      "types": []
+    }
+  }
+}

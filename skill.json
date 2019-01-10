@@ -1,0 +1,36 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "summary": "Plays videos from Look at the Book, streamed from Desiring God.",
+          "examplePhrases": [
+            "Alexa open look at the book",
+            "Alexa play look at the book",
+            "Alexa show me look at the book"
+          ],
+          "name": "Look at the Book",
+          "description": "This skill plays Look at the Book Episodes from Desiring God.\nTo install simply say \"Alexa enable sermon of the day\".\n Choose the episode to watch by title.\n\nThis is an unofficial skill that simply forwards the content to your Alexa enabled device."
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Use example phrases and choose videos to play. Pause and play videos and return to main screen using voice and touch commands.\n Test rewind.",
+      "category": "RELIGION_AND_SPIRITUALITY",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "ask-custom-Look_at_the_Book-default",
+          "sourceDir": "lambda/py/lambda_upload"
+        },
+        "interfaces": [
+          {
+            "type": "ALEXA_PRESENTATION_APL"
+          }
+        ]
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}
