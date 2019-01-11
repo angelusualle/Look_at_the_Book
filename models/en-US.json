@@ -66,7 +66,8 @@
             "play {episode_ordinal}",
             "{episode_number}",
             "play number {episode_number}",
-            "play {episode_number}"
+            "play {episode_number}",
+            "number {episode_number}"
           ]
         },
         {
