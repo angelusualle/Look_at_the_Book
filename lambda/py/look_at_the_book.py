@@ -4,10 +4,12 @@
 # the decorators approach in skill builder.
 import logging
 import feedparser
+import json
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.utils import is_request_type, is_intent_name
 from ask_sdk_core.handler_input import HandlerInput
+from ask_sdk_model.interfaces.alexa.presentation.apl import RenderDocumentDirective
 
 from ask_sdk_model.ui import SimpleCard
 from ask_sdk_model import Response
@@ -24,7 +26,13 @@ def launch_request_handler(handler_input):
     """Handler for Skill Launch."""
     feed = feedparser.parse(FEED_URL)
     speech_text = "Welcome to the Look at the Book Skill, which of the following would you like to see?"
-    return handler_input.response_builder.speak(speech_text).response
+    return handler_input.response_builder.speak(speech_text).add_directive(
+            RenderDocumentDirective(
+                token="APLTemplate",
+                document=_load_apl_document('lab_start_page.json'),
+                datasources=_load_apl_document('lab_start_page_payload.json')
+            )
+        ).response
 
 
 @sb.request_handler(can_handle_func=is_intent_name("HelloWorldIntent"))
@@ -97,5 +105,9 @@ def all_exception_handler(handler_input, exception):
 
     return handler_input.response_builder.response
 
+def _load_apl_document(file_path):
+    """Load the apl json document at the path into a dict object."""
+    with open(file_path) as f:
+        return json.load(f)
 
 handler = sb.lambda_handler()
