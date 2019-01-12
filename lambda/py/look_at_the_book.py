@@ -23,7 +23,6 @@ FEED_URL = 'http://feed.desiringgod.org/look-at-the-book.rss'
 def launch_request_handler(handler_input):
     """Handler for Skill Launch."""
     feed = feedparser.parse(FEED_URL)
-    episodes = {x['id']: x for x in feed['entries']}
     speech_text = "Welcome to the Look at the Book Skill, which of the following would you like to see?"
     return handler_input.response_builder.speak(speech_text).response
 

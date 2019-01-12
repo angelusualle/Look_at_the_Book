@@ -1,0 +1,104 @@
+{
+    "type": "APL",
+    "version": "1.0",
+    "theme": "dark",
+    "import": [],
+    "resources": [],
+    "styles": {},
+    "layouts": {},
+    "mainTemplate": {
+        "parameters":[
+            "payload"
+            ], 
+        "items": [
+            {
+                "type":"Container",
+                "width":"100vw",
+                "height":"100vh",
+                "items":[
+                    {
+                        "type":"Image",
+                        "source":"https://s3.amazonaws.com/alexaskillresourcesabarranc/lab_learn_card-34a9d776302b0802097e6050eb812f9e3a018f578a7b7c2338b2e9316a82909e.jpg",
+                        "width":"100vw",
+                        "height":"70vh",
+						"position":"absolute",
+						"scale":"best-fit-down"
+                    },
+                    {
+                        "when":"${viewport.shape == 'round'}",
+                        "type":"Container",
+                        "alignSelf":"center",
+                        "paddingTop":"40vh",
+                        "width":"90vw",
+                        "items":[{
+                            "type":"Sequence",
+                            "scrollDirection":"vertical",
+                            "height":"40vh",
+                            "data":"${payload.episodes}",
+                            "items":[{
+                                    "type":"TouchWrapper",
+                                    "paddingTop":30,
+                                    "item":
+                                        {
+                                            "type":"Frame",
+                                            "borderColor":"white",
+                                            "width":"90vw",
+                                            "borderWidth": 2,
+                                            "item":
+                                                {
+                                                "type":"Text",
+                                                "fontSize":22,
+                                                "paddingLeft":10,
+                                                "height":"15vh",
+                                                "textAlignVertical":"center",
+                                                "width":"90vw",
+                                                "textAlign":"center",
+                                                "text":"${data.title}"
+                                                }
+                                        }
+                                }]
+                        }]
+                    },
+                    {
+                        "when":"${viewport.shape != 'round'}",
+                        "type":"Container",
+                        "width":"80vw",
+                        "height":"100vh",
+                        "paddingTop":250,
+                        "alignSelf":"center",
+                        "items":[{
+                            "type":"Sequence",
+                            "scrollDirection":"vertical",
+                            "width":"80vw",
+                            "height":"100vh",
+                            "data":"${payload.episodes}",
+                            "items":[
+                                {
+                                    "type":"TouchWrapper",
+                                    "paddingBottom":25,
+                                    "item":
+                                        {
+                                            "type":"Frame",
+                                            "borderColor":"white",
+                                            "width":"80vw",
+                                            "borderWidth": 2,
+                                            "item":
+                                                {
+                                                "type":"Text",
+                                                "fontSize":26,
+                                                "paddingLeft":0,
+                                                "height":"15vh",
+                                                "textAlignVertical":"center",
+                                                "width":"80vw",
+                                                "textAlign":"center",
+                                                "text":"${data.title}"
+                                                }
+                                        }
+                                }]
+                        }]
+                    }
+                ]
+            }
+        ]
+    }
+}	
