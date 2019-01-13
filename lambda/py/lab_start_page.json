@@ -82,18 +82,18 @@
                                 {
                                     "type":"TouchWrapper",
                                     "paddingBottom":25,
+                                    "onPress": {
+                                        "type": "SendEvent",
+                                        "arguments": [
+                                            "${index}"
+                                        ]
+                                    },
                                     "item":
                                         {
                                             "type":"Frame",
                                             "borderColor":"white",
                                             "width":"80vw",
                                             "borderWidth": 2,
-                                                "onPress": {
-                                                    "type": "SendEvent",
-                                                    "arguments": [
-                                                        "${index}"
-                                                    ]
-                                                },
                                             "item":
                                                 {
                                                 "type":"Text",

@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# This is a simple Hello World Alexa Skill, built using
-# the decorators approach in skill builder.
 import logging
 import feedparser
 import json
-import uuid
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.utils import is_request_type, is_intent_name
-from ask_sdk_core.handler_input import HandlerInput
 from ask_sdk_model.interfaces.alexa.presentation.apl import RenderDocumentDirective
 
 from ask_sdk_model.ui import SimpleCard
-from ask_sdk_model import Response
 
 sb = SkillBuilder()
 
@@ -26,7 +21,8 @@ FEED_URL = 'http://feed.desiringgod.org/look-at-the-book.rss'
 def launch_request_handler(handler_input):
     """Handler for Skill Launch."""
     feed = feedparser.parse(FEED_URL)
-    speech_text = "Welcome to the Look at the Book Skill, which of the following would you like to see?"
+    speech_text = "Welcome to the Look at the Book Skill"
+    reprompt="which of the following episodes would you like to see?"
     return handler_input.response_builder.add_directive(
             RenderDocumentDirective(
                 token='APL-Template-LAB',
@@ -37,17 +33,29 @@ def launch_request_handler(handler_input):
                                 "listId": "bt3Sample",
                                 "totalNumberOfItems": 50,
                                 "items": [{"title":x['title']} for x in feed['items']]
-                            }})).speak(speech_text).response
+                            }})).speak(speech_text).ask(reprompt).response
 
 
-@sb.request_handler(can_handle_func=is_intent_name("HelloWorldIntent"))
-def hello_world_intent_handler(handler_input):
-    """Handler for Hello World Intent."""
-    speech_text = "Hello Python World from Decorators!"
-
-    return handler_input.response_builder.speak(speech_text).set_card(
-        SimpleCard("Hello World", speech_text)).set_should_end_session(
-        True).response
+@sb.request_handler(can_handle_func=lambda handler_input:
+                    is_request_type("Alexa.Presentation.APL.UserEvent") and
+                    len(handler_input.request_envelope.request.to_dict().get('arguments', {})) != 0 and
+                    handler_input.request_envelope.request.to_dict()['arguments'][0] != 'videoEnded')
+def lab_selected_handler_vui(handler_input):
+    selected_index = int(handler_input.request_envelope.request.to_dict()['arguments'][0])
+    episode = [{'title': x['title'], 'URL': x['media_content'][0]['url']} for x in feedparser.parse(FEED_URL)['items']][
+        selected_index]
+    speech_text = "Playing episode titled: " + episode['title']
+    return handler_input.response_builder.add_directive(
+            RenderDocumentDirective(
+                token='APL-Template-LAB',
+                document=_load_apl_document('lab_selection.json'),
+                datasources={
+                  "episode": {
+                      "type": "object",
+                      "objectId": "bt3Sample",
+                      "info": episode
+                  }
+                })).speak(speech_text).response
 
 
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.HelpIntent"))
