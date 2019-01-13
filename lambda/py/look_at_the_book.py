@@ -5,6 +5,7 @@
 import logging
 import feedparser
 import json
+import uuid
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.utils import is_request_type, is_intent_name
@@ -26,19 +27,22 @@ def launch_request_handler(handler_input):
     """Handler for Skill Launch."""
     feed = feedparser.parse(FEED_URL)
     speech_text = "Welcome to the Look at the Book Skill, which of the following would you like to see?"
-    return handler_input.response_builder.speak(speech_text).add_directive(
+    return handler_input.response_builder.add_directive(
             RenderDocumentDirective(
-                token="APLTemplate",
+                token='APL-Template-LAB',
                 document=_load_apl_document('lab_start_page.json'),
-                datasources=_load_apl_document('lab_start_page_payload.json')
-            )
-        ).response
+                datasources={
+                            "episodes": {
+                                "type": "list",
+                                "listId": "bt3Sample",
+                                "totalNumberOfItems": 50,
+                                "items": [{"title":x['title']} for x in feed['items']]
+                            }})).speak(speech_text).response
 
 
 @sb.request_handler(can_handle_func=is_intent_name("HelloWorldIntent"))
 def hello_world_intent_handler(handler_input):
     """Handler for Hello World Intent."""
-    # type: (HandlerInput) -> Response
     speech_text = "Hello Python World from Decorators!"
 
     return handler_input.response_builder.speak(speech_text).set_card(
@@ -49,7 +53,6 @@ def hello_world_intent_handler(handler_input):
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.HelpIntent"))
 def help_intent_handler(handler_input):
     """Handler for Help Intent."""
-    # type: (HandlerInput) -> Response
     speech_text = "You can say hello to me!"
 
     return handler_input.response_builder.speak(speech_text).ask(
@@ -63,7 +66,6 @@ def help_intent_handler(handler_input):
         is_intent_name("AMAZON.StopIntent")(handler_input))
 def cancel_and_stop_intent_handler(handler_input):
     """Single handler for Cancel and Stop Intent."""
-    # type: (HandlerInput) -> Response
     speech_text = "Goodbye!"
 
     return handler_input.response_builder.speak(speech_text).set_card(
@@ -76,7 +78,6 @@ def fallback_handler(handler_input):
     This handler will not be triggered except in that locale,
     so it is safe to deploy on any locale.
     """
-    # type: (HandlerInput) -> Response
     speech = (
         "The Hello World skill can't help you with that.  "
         "You can say hello!!")
@@ -88,7 +89,6 @@ def fallback_handler(handler_input):
 @sb.request_handler(can_handle_func=is_request_type("SessionEndedRequest"))
 def session_ended_request_handler(handler_input):
     """Handler for Session End."""
-    # type: (HandlerInput) -> Response
     return handler_input.response_builder.response
 
 
@@ -97,7 +97,6 @@ def all_exception_handler(handler_input, exception):
     """Catch all exception handler, log exception and
     respond with custom message.
     """
-    # type: (HandlerInput, Exception) -> Response
     logger.error(exception, exc_info=True)
 
     speech = "Sorry, there was some problem. Please try again!!"
