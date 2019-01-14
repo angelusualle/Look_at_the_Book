@@ -41,7 +41,8 @@
                                     "onPress": {
                                         "type": "SendEvent",
                                         "arguments": [
-                                            "${index}"
+                                            "${index}",
+                                            "episode_selected"
                                         ]
                                     },
                                     "item":
@@ -85,7 +86,8 @@
                                     "onPress": {
                                         "type": "SendEvent",
                                         "arguments": [
-                                            "${index}"
+                                            "${index}",
+                                            "episode_selected"
                                         ]
                                     },
                                     "item":

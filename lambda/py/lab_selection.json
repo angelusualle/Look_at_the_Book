@@ -150,6 +150,13 @@
                             "type": "ControlMedia",
                             "componentId": "${componentId}",
                             "command": "pause"
+                        },
+                        {
+                            "type": "SendEvent",
+                            "arguments": [
+                                "pause_play_pressed",
+                                "${event.source.value}"
+                            ]
                         }
                     ]
                 },
