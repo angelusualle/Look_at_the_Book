@@ -17,12 +17,13 @@ FEED_URL = 'http://feed.desiringgod.org/look-at-the-book.rss'
 
 
 @sb.request_handler(can_handle_func=is_request_type("LaunchRequest"))
-def launch_request_handler(handler_input):
+def launch_request_handler_ab(handler_input,
+                           speech_text="Which of the following most recent episodes would you like to see? For example "
+                                       "say 'play the latest', or press one on the screen."):
     """Handler for Skill Launch."""
     feed = feedparser.parse(FEED_URL)
-    speech_text = "Which of the following most recent episodes would you like to" \
-                  " see? Press it or say 'play the first one'"
-    reprompt= "Which of the following episodes would you like to see? You can say play number 0 or click on screen."
+    reprompt= "Which of the following episodes would you like to see? You can say 'play the latest'" \
+              " or press one on screen."
     return handler_input.response_builder.add_directive(
             RenderDocumentDirective(
                 token='APL-Template-LAB',
@@ -46,8 +47,28 @@ def lab_selected_handler_vui(handler_input):
 
 
 @sb.request_handler(can_handle_func=is_intent_name("PlayLatestIntent"))
-def lab_selected_handler_vui(handler_input):
+def lab_selected_handler_vui_latest(handler_input):
     return play_episode_at_index(0, handler_input)
+
+
+@sb.request_handler(can_handle_func=is_intent_name("GoBackIntent"))
+def go_back_handler(handler_input):
+    """Handler for going back to main menu"""
+    feed = feedparser.parse(FEED_URL)
+    speech_text= "Ok back to main menu."
+    reprompt = "Which of the following episodes would you like to see? You can say play the latest or press one on" \
+               " screen."
+    return handler_input.response_builder.add_directive(
+            RenderDocumentDirective(
+                token='APL-Template-LAB',
+                document=_load_apl_document('lab_start_page.json'),
+                datasources={
+                            "episodes": {
+                                "type": "list",
+                                "listId": "bt3Sample",
+                                "totalNumberOfItems": 50,
+                                "items": [{"title":x['title']} for x in feed['items']]
+                            }})).speak(speech_text).ask(reprompt).response
 
 
 @sb.request_handler(can_handle_func=lambda handler_input:
@@ -55,8 +76,18 @@ def lab_selected_handler_vui(handler_input):
                     len(handler_input.request_envelope.request.to_dict().get('arguments', [])) > 1 and
                     handler_input.request_envelope.request.to_dict()['arguments'][0] == 'pause_play_pressed')
 def lab_play_pause_handler(handler_input):
-    handler_input.attributes_manager.session_attributes['PLAYING'] = handler_input.request_envelope.request.to_dict()['arguments'][1]
+    handler_input.attributes_manager.session_attributes['PLAYING'] = \
+        handler_input.request_envelope.request.to_dict()['arguments'][1]
     return handler_input.response_builder.speak('').set_should_end_session(False).response
+
+
+@sb.request_handler(can_handle_func=lambda handler_input:
+                    is_request_type("Alexa.Presentation.APL.UserEvent") and
+                    len(handler_input.request_envelope.request.to_dict().get('arguments', [])) > 0 and
+                    handler_input.request_envelope.request.to_dict()['arguments'][0] == 'videoEnded')
+def video_ended_handler(handler_input):
+    speech_text = "Goodbye!"
+    return handler_input.response_builder.speak(speech_text).set_should_end_session(True).response
 
 
 @sb.global_request_interceptor()
@@ -100,9 +131,9 @@ def fallback_handler(handler_input):
     so it is safe to deploy on any locale.
     """
     speech = (
-        "The Hello World skill can't help you with that.  "
-        "You can say hello!!")
-    reprompt = "You can say hello!!"
+        "The Look at the Book Skill cannot help you with that. "
+        "You can say play the latest or go back to go to the main menu or quit to quit.")
+    reprompt = "You can say play the latest or go back to go to the main menu or quit to quit."
     handler_input.response_builder.speak(speech).ask(reprompt)
     return handler_input.response_builder.response
 
@@ -120,7 +151,7 @@ def all_exception_handler(handler_input, exception):
     """
     logger.error(exception, exc_info=True)
 
-    speech = "Sorry, there was some problem. Please try again!!"
+    speech = "Sorry, there was some problem. Please try again your request again."
     handler_input.response_builder.speak(speech).ask(speech)
 
     return handler_input.response_builder.response
@@ -141,7 +172,7 @@ def play_episode_at_index(selected_index, handler_input):
     """
     episode = [{'title': x['title'], 'URL': x['media_content'][0]['url']} for x in feedparser.parse(FEED_URL)['items']][
             selected_index]
-    speech_text = "Playing episode titled: " + episode['title']
+    speech_text = "Playing episode requested"
     handler_input.response_builder.add_directive(
             RenderDocumentDirective(
                 token='APL-Template-LAB-2',
