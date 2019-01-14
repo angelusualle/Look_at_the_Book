@@ -12,8 +12,21 @@ from ask_sdk_model.ui import SimpleCard
 sb = SkillBuilder()
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.ERROR)
 FEED_URL = 'http://feed.desiringgod.org/look-at-the-book.rss'
+
+
+@sb.request_handler(can_handle_func=lambda handler_input: is_unsupported(handler_input))
+def unsupported(handler_input):
+    return handler_input.response_builder.speak('This device is not supported for the look at the book skill. Goodbye').set_should_end_session(True).response
+
+
+def is_unsupported(handler_input):
+    if handler_input.request_envelope.context.system.device:
+        # Since skill events won't have device information
+        return handler_input.request_envelope.context.system.device.supported_interfaces.to_dict().get('alexa_presentation_apl', None) is None
+    else:
+        return False
 
 
 @sb.request_handler(can_handle_func=is_request_type("LaunchRequest"))
@@ -105,11 +118,9 @@ def process_response(handler_input, response):
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.HelpIntent"))
 def help_intent_handler(handler_input):
     """Handler for Help Intent."""
-    speech_text = "You can say hello to me!"
-
+    speech_text = "You can say play the latest or go back to go to the main menu or quit to quit."
     return handler_input.response_builder.speak(speech_text).ask(
-        speech_text).set_card(SimpleCard(
-            "Hello World", speech_text)).response
+        speech_text).response
 
 
 @sb.request_handler(
@@ -120,8 +131,7 @@ def cancel_and_stop_intent_handler(handler_input):
     """Single handler for Cancel and Stop Intent."""
     speech_text = "Goodbye!"
 
-    return handler_input.response_builder.speak(speech_text).set_card(
-        SimpleCard("Hello World", speech_text)).response
+    return handler_input.response_builder.speak(speech_text).response
 
 
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.FallbackIntent"))
