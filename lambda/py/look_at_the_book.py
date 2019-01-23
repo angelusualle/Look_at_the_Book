@@ -91,7 +91,7 @@ def go_back_handler(handler_input):
 def lab_play_pause_handler(handler_input):
     handler_input.attributes_manager.session_attributes['PLAYING'] = \
         handler_input.request_envelope.request.to_dict()['arguments'][1]
-    return handler_input.response_builder.speak('').set_should_end_session(False).response
+    return handler_input.response_builder.speak('').response
 
 
 @sb.request_handler(can_handle_func=lambda handler_input:
@@ -193,7 +193,7 @@ def play_episode_at_index(selected_index, handler_input):
                       "objectId": "bt3Sample",
                       "info": episode
                   }
-                })).speak(speech_text).set_should_end_session(False)
+                })).speak(speech_text)
     return handler_input.response_builder.response
 
 
